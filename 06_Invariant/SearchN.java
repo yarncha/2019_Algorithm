@@ -27,37 +27,35 @@ public class SearchN {
     }
 
     public static int findIndexN(ArrayList<Integer> arrayA, int startA, int endA, ArrayList<Integer> arrayB, int startB, int endB) {
-        int result = 0;
-        if (endA - startA == 1) {
-            if (endB - startB == 1) {
-                if (arrayA.get(startA) < arrayB.get(startB)) {      //첫 번째 원소들을 비교하여 큰 원소를 찾고
-                    if (arrayA.get(endA) < arrayB.get(startB)) {
-                        return arrayA.get(endA);
-                    }
-                    return arrayB.get(startB);
-                    //그 원소와 반대쪽의 다음 원소를 비교하여 두 번째로 큰 원소를 찾아낸다.
-                } else {
-                    if (arrayA.get(startA) < arrayB.get(endB)) {
-                        return arrayA.get(startA);
-                    }
-                    return arrayB.get(endB);
-                }
+        //배열의 범위를 줄여 나가면서 원소가 2개만 남을 때까지 반복한다.
+        while(endA-startA!=1){
+            int midA = startA + ((endA - startA) / 2);
+            int midB = startB + ((endB - startB) / 2);
+            //가운데 원소의 index를 구한다.
+
+            if (arrayA.get(midA) < arrayB.get(midB)) {      //A가 B보다 가운데 원소가 작을 경우는
+                startA = midA;
+                endB = startB+(endA-midA);
+                //A의 범위를 mid보다 큰 범위, B의 범위를 mid보다 작은 범위로 줄인 후 다시 반복을 수행하도록 한다.
+            } else {      //B가 더 작을 경우는
+                endA = startA+(endB-midB);
+                startB = midB;
+                //B의 범위를 mid보다 큰 범위, A의 범위를 mid보다 작은 범위로 줄인 후 다시 반복을 수행하도록 한다.
             }
         }
-        //두 배열 모두가 길이가 2일 때는 길이 순으로 나열했을 때 2번째 원소를 리턴하면 이 원소가 가운데 원소이다.
-        //따라서 원소 몇 개를 비교해 두번째 원소를 알아내고 리턴한다.
 
-        //배열 길이가 둘 다 2보다 길 경우 재귀를 이용하여 범위를 점점 줄여나가야 한다.
-        int midA = startA + ((endA - startA) / 2);
-        int midB = startB + ((endB - startB) / 2);
-
-        if (arrayA.get(midA) < arrayB.get(midB)) {      //A가 B보다 가운데 원소가 작을 경우는
-            result = findIndexN(arrayA, midA, endA, arrayB, startB, startB + (endA - midA));
-            //A에서 가운데보다 큰 원소, B에서 가운데보다 작은 원소의 범위를 추출하여 다시 findIndexN()메소드를 수행한다.
-        } else {      //B가 더 작을 경우는
-            result = findIndexN(arrayA, startA, startA + (endB - midB), arrayB, midB, endB);
-            //A에서 가운데보다 작은 원소, B에서 가운데보다 큰 원소의 범위를 추출하여 다시 findIndexN()메소드를 수행한다.
+        //각 배열 당 원소가 2개씩만 남아서 반복을 탈출했을 경우
+        if (arrayA.get(startA) < arrayB.get(startB)) {      //첫 번째 원소들을 비교하여 큰 원소를 찾고
+            if (arrayA.get(endA) < arrayB.get(startB)) {
+                return arrayA.get(endA);
+            }
+            return arrayB.get(startB);
+            //그 원소와 반대쪽의 다음 원소를 비교하여 두 번째로 큰 원소를 찾아낸다.
+        } else {
+            if (arrayA.get(startA) < arrayB.get(endB)) {
+                return arrayA.get(startA);
+            }
+            return arrayB.get(endB);
         }
-        return result;      //결과를 리턴한다.
     }
 }
